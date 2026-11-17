@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DS音轨翻译 · 设置</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="ambient" aria-hidden="true"></div>
+    <main class="shell">
+      <header class="hero">
+        <img class="logo" src="../../icons/icon48.png" alt="DS音轨翻译" width="48" height="48" />
+        <div class="hero-text">
+          <h1>DS音轨翻译</h1>
+          <p>标签页音轨实时识别 · DeepSeek 翻译为简体中文</p>
+        </div>
+        <span class="pill" id="keyState">检查中…</span>
+      </header>
+
+      <form id="form" autocomplete="off">
+        <section class="card">
+          <div class="card-head">
+            <h2>API 连接</h2>
+            <span class="tag">需自备 Key</span>
+          </div>
+          <p class="desc">
+            本扩展不含任何内置 Key，请填写你自己的 DeepSeek API Key（
+            <a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noreferrer">获取地址</a>
+            ）。Key 只保存在本机 <code>chrome.storage.local</code>，不会上传到除 DeepSeek 以外的任何地方。
+          </p>
+
+          <label class="field">
+            <span>API Key</span>
+            <div class="inline">
+              <input id="apiKey" type="password" placeholder="sk-..." spellcheck="false" autocomplete="off" />
+              <button type="button" class="btn ghost" id="toggleKey">显示</button>
+              <button type="button" class="btn primary" id="testBtn">测试连接</button>
+            </div>
+          </label>
+
+          <div class="test-result" id="testResult" hidden></div>
+
+          <label class="field">
+            <span>Base URL</span>
+            <input id="baseUrl" type="text" placeholder="https://api.deepseek.com" spellcheck="false" />
+          </label>
+          <p class="hint">
+            语音识别：<code id="asrPreview">https://api.deepseek.com/v1/tools/asr</code><br />
+            文本翻译：<code id="endpointPreview">https://api.deepseek.com/chat/completions</code>
+          </p>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <h2>实时翻译</h2>
+            <span class="tag muted">固定简体中文</span>
+          </div>
+          <p class="desc">
+            音轨语言由 DeepSeek ASR 自动识别，翻译固定输出简体中文，使用 <code>deepseek-chat</code> 模型。
+          </p>
+          <div class="grid2">
+            <label class="field">
+              <span>实时模式</span>
+              <select id="liveMode"></select>
+            </label>
+            <label class="field">
+              <span>上下文行数（0–8）</span>
+              <input id="contextLines" type="number" min="0" max="8" step="1" />
+            </label>
+          </div>
+          <p class="hint" id="liveModeHint"></p>
+          <div class="grid2">
+            <label class="field">
+              <span>Temperature（0–2）</span>
+              <input id="temperature" type="number" min="0" max="2" step="0.1" />
+            </label>
+            <label class="field">
+              <span>最大输出 tokens</span>
+              <input id="maxTokens" type="number" min="64" max="4096" step="64" />
+            </label>
+          </div>
+          <p class="hint">「极速」延迟最低；「均衡」「稳定」会等待更完整的语句，省一些 token。</p>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <h2>字幕外观</h2>
+          </div>
+          <div class="grid2">
+            <label class="field range-field">
+              <span>字号 <output id="fontSizeOut">28px</output></span>
+              <input id="fontSize" type="range" min="14" max="64" step="1" />
+            </label>
+            <label class="field range-field">
+              <span>距底部 <output id="offsetOut">12%</output></span>
+              <input id="offsetPercent" type="range" min="0" max="55" step="1" />
+            </label>
+          </div>
+          <label class="field range-field">
+            <span>字幕背景不透明度 <output id="opacityOut">84%</output></span>
+            <input id="opacity" type="range" min="20" max="100" step="1" />
+          </label>
+          <div class="checks">
+            <label><input type="checkbox" id="showOriginal" /> 同时显示识别出的原文</label>
+            <label><input type="checkbox" id="showStatus" /> 显示状态提示</label>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <h2>使用统计</h2>
+            <span class="tag muted">仅本机</span>
+          </div>
+          <div class="stats" id="stats"></div>
+          <div class="row">
+            <button type="button" class="btn ghost" id="resetStats">重置统计</button>
+            <button type="button" class="btn ghost" id="clearCache">清空后台缓存</button>
+          </div>
+          <p class="hint">统计不包含 DeepSeek ASR 的音频时长计费，以开放平台账单为准。</p>
+        </section>
+
+        <div class="footer">
+          <button type="button" class="btn ghost" id="resetAll">恢复默认</button>
+          <button type="submit" class="btn primary wide" id="saveBtn">保存设置</button>
+        </div>
+      </form>
+    </main>
+
+    <div class="toast" id="toast" role="status" hidden></div>
+    <script src="../shared/settings.js"></script>
+    <script src="../shared/languages.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>
