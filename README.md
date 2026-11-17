@@ -2,15 +2,9 @@
 
 **直接监听 YouTube 标签页音轨，用 DeepSeek 实时翻译成简体中文的 Chrome 扩展（Manifest V3）。**
 
-> 📦 **这是历史版本快照。** v1.3.3 发布于 2026-11，之后项目重写为
-> [YT音轨翻译](https://github.com/LeoHwang74/yt-audio-translator)：语音识别和翻译都改成本地运行（faster-whisper + Ollama），
-> 不再需要 API Key。新装用户建议直接用新版。
->
-> 这个仓库保留原因：v1.3.3 是最后一个「云端 ASR + 可换翻译服务」的版本，有些场景下识别质量比本地 small/base 模型更好。
+## 和 YT音轨翻译 的区别
 
-## 和 v1.4+ 的区别
-
-| | v1.3.3（本仓库） | YT音轨翻译（新版） |
+| | v1.3.3（本仓库） | YT音轨翻译 |
 | --- | --- | --- |
 | 语音识别 | DeepSeek ASR（按音频时长计费） | 本地 faster-whisper（免费） |
 | 翻译 | `deepseek-chat` | 本地 Ollama `qwen2.5:3b` |
@@ -88,7 +82,7 @@ ASR 不支持流式，端到端延迟约 **2–3.5 秒**。
 - 音频翻译仅支持 YouTube 页面，只针对当前标签页，不监听麦克风
 - 标签页静音时捕获到的音轨也是静音，ASR 无法识别
 - DRM 保护的内容可能无法捕获音频
-- 模型固定为 `deepseek-chat`，不能改（v1.4.0 起才支持自定义模型）
+- 模型固定为 `deepseek-chat`，不能改（YT音轨翻译 才支持自定义模型）
 
 ## License
 
