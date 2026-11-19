@@ -20,22 +20,73 @@
 - 划词翻译、`Alt + Shift + A` 快捷键
 - 绿色 DS 图标
 
-## 安装
+## 安装与配置
 
-1. 下载 [Releases](../../releases/latest) 里的 `deepseek-live-translator-v1.3.3.zip` 并解压
-2. 打开 `chrome://extensions`，右上角开启**开发者模式**
-3. 点「加载已解压的扩展程序」，选择解压出来的文件夹
-4. 首次安装会自动打开设置页
+整个流程四步，大约 5 分钟。**不需要装 Python、不需要跑本地服务**，只要一个 DeepSeek API Key。
 
-需要 **Chrome 116+**（`offscreen` / `tabCapture`）。
+### 1. 准备 DeepSeek API Key
 
-## 准备 API Key
+1. 打开 [DeepSeek 开放平台](https://platform.deepseek.com/api_keys) 并登录
+2. 创建一把新 Key，形如 `sk-xxxxxxxxxxxxxxxx`
+3. **立刻复制**——页面关掉后就看不到了（只显示一次）
+4. 顺便确认账户里有余额：语音识别按时长计费，余额为 0 会返回 402
 
-本扩展**不内置任何 Key**，需要你自己去
-[DeepSeek 开放平台](https://platform.deepseek.com/api_keys) 创建一把（形如 `sk-...`），
-粘贴到设置页的 `API Key` 输入框并保存。
+> Key 只保存在本机 `chrome.storage.local`，请求由扩展后台直接发往 `api.deepseek.com`，不经过任何第三方。
 
-Key 只保存在本机 `chrome.storage.local`，请求由扩展后台直接发往 `api.deepseek.com`。
+### 2. 下载并加载扩展
+
+1. 到 [Releases](../../releases/latest) 下载 `deepseek-live-translator-v1.3.3.zip`
+2. 解压到任意目录（解压后的文件夹里应该直接能看到 `manifest.json`）
+3. 打开 `chrome://extensions`
+4. 右上角打开 **开发者模式**
+5. 点 **加载已解压的扩展程序**，选中第 2 步解压出来的文件夹
+6. 加载成功后，首次安装会自动弹出设置页
+
+需要 **Chrome 116+**（`offscreen` / `tabCapture` 依赖）。
+
+### 3. 填写 Key 并测试
+
+在设置页：
+
+| 字段 | 填什么 |
+| --- | --- |
+| API Key | 第 1 步复制的 `sk-...` |
+| Base URL | 保持默认 `https://api.deepseek.com` |
+| 实时模式 | 建议先保持「极速」 |
+| 上下文行数 | 默认 3 |
+
+点 **测试连接**，看到「连接成功 + 返回示例文本」就说明 Key 和网络都通了，然后点 **保存设置**。
+
+> 模型固定为 `deepseek-chat`，设置页没有模型选项——这是 v1.3.3 的限制。
+
+### 4. 以后更新版本
+
+新版本发布后：
+
+1. 下载新的 zip 并解压，**覆盖**原文件夹（或者换个目录）
+2. `chrome://extensions` 里点该扩展的 **重新加载**
+3. 刷新 YouTube 页面
+
+已保存的 Key 和设置不会丢，它们存在扩展的本地存储里。
+
+### 卸载
+
+`chrome://extensions` → 该扩展卡片 → **移除**。
+如果要连本地数据一起清掉，移除前先打开设置页点「恢复默认」，或者移除后在 Chrome 设置里清除扩展数据。
+
+## 排错
+
+| 现象 | 原因 | 处理 |
+| --- | --- | --- |
+| 提示「尚未配置 DeepSeek API Key」 | 设置页没填 Key 或没点保存 | 填好后点 **保存设置** |
+| 测试连接报 401 | Key 无效、复制不全或已作废 | 回平台重新生成一把 |
+| 测试连接报 402 | 账户余额不足 | 到开放平台充值 |
+| 报 `model not found` / 404 | 这个版本固定用 `deepseek-chat`，无法改 | 确认 Base URL 是 `https://api.deepseek.com`，不要填成别的服务商 |
+| 点开始后提示无法捕获音轨 | 不是 YouTube 页面，或没有用户点击授权 | 确认当前标签页是 `youtube.com`，刷新页面重试 |
+| 有声音但一直不出字幕 | 标签页被静音、系统输出设备异常，或内容是 DRM 保护的 | 取消静音；DRM 内容（Netflix 等）无法捕获 |
+| 识别请求过于频繁（429） | 分片发得太密或平台限流 | 设置页把实时模式改成「均衡」或「稳定」 |
+| 字幕延迟很大（3 秒以上） | 正常现象 | ASR 不支持流式，0.6–1.6 秒分片，端到端 2–3.5 秒属于预期 |
+
 
 ## 使用
 
